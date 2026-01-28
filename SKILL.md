@@ -181,7 +181,7 @@ Would you like me to explain any of these concepts further?
 
 ## Implementation Notes
 
-- Use the platform's question tool for each question individually, even if batching is supported
+- Use AskQuestion tool for each question individually, even if batching is supported
 - Wait for user response before showing next question
 - Track answers internally to provide review at end
 - Keep questions focused on the MOST RECENT work, not general knowledge
