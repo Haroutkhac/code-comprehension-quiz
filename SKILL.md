@@ -21,6 +21,13 @@ Skip quizzing for:
 - Trivial one-line fixes (typos, imports)
 - Pure information lookups
 
+Stop quizzing when:
+- The user declines
+- The user skips two questions in a row
+- The user asks a new unrelated question
+
+Resume only after an explicit request like "quiz me", "test my understanding", or "/quiz".
+
 ## Quiz Generation
 
 ### Determine Question Count
@@ -52,6 +59,7 @@ Follow this order:
 1. Write the stem (question) first
 2. Write the correct answer
 3. Write 2-3 distractors that match the correct answer in length, grammar, and style
+4. Ensure each question targets a different concept from the most recent work
 
 ### Stem Guidelines
 
@@ -60,6 +68,7 @@ Follow this order:
 - Phrase as a question or incomplete statement
 - Avoid negatives ("Which is NOT..."), passive voice, and absolutes (always, never)
 - Keep vocabulary appropriate - no jargon the user hasn't seen in context
+- Keep stems under 25 words unless clarity requires more
 
 ### Option Guidelines
 
@@ -70,12 +79,14 @@ Follow this order:
 - **One unambiguously correct answer** - avoid "most correct" situations
 - **Avoid**: "All of the above", "None of the above", "Both A and B"
 - **Avoid clues**: Don't let grammar, length, or specificity reveal the answer
+- Keep options under 12 words unless clarity requires more
 
 ### Answer Position Randomization
 
 For each question, randomly select the position (A/B/C/D) for the correct answer. Use this method:
 - Take the question number, multiply by 7, mod by number of options
 - This produces: Q1→position varies, Q2→different position, etc.
+- Map the result to letters: 0->A, 1->B, 2->C, 3->D
 
 Do NOT just cycle through A, B, C, D in order.
 
@@ -137,6 +148,7 @@ D) Blocking concurrent effect executions
 After all questions answered:
 
 1. **Show score**: "You got X/N correct"
+   - Treat skipped or unanswered questions as incorrect and mark them as "skipped" in the review
 
 2. **Review each question**:
    - Show the question and user's answer
@@ -144,10 +156,7 @@ After all questions answered:
    - For ALL answers, explain WHY the correct answer is correct
    - For wrong answers, explain the misconception
 
-3. **Offer deeper dive**: If score < 80%, offer to:
-   - Re-explain the concept that was missed
-   - Show the relevant code again with annotations
-   - Provide a simpler example
+3. **Offer recap or deeper dive**: Ask whether the user wants a short recap or a deeper dive. If score < 80%, recommend a deeper dive.
 
 ### Review Format
 
@@ -172,8 +181,10 @@ Would you like me to explain any of these concepts further?
 
 ## Implementation Notes
 
-- Use AskUserQuestion tool for each question individually
+- Use the platform's question tool for each question individually, even if batching is supported
 - Wait for user response before showing next question
 - Track answers internally to provide review at end
 - Keep questions focused on the MOST RECENT work, not general knowledge
 - Questions should be answerable from the conversation context alone
+- If the user does not answer, mark the question as skipped and continue
+- Stop the quiz when the user declines or skips twice, and wait for an explicit request to resume
