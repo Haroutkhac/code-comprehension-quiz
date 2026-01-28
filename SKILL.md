@@ -1,6 +1,6 @@
 ---
 name: code-comprehension-quiz
-description: Test user understanding of code changes and explanations after Claude completes work. Generates adaptive multiple-choice quizzes based on the complexity of the previous response. Use this skill automatically after making substantive code changes, explaining code patterns, debugging, refactoring, or any educational coding interaction. Also triggers when user says "quiz me", "test my understanding", or "/quiz".
+description: Test user understanding of code changes and explanations. Generates adaptive multiple-choice quizzes. Only triggers on explicit request - when user says "quiz me", "test my understanding", or "/quiz". Does NOT auto-trigger.
 ---
 
 # Code Comprehension Quiz
@@ -9,24 +9,15 @@ Generate multiple-choice questions to test understanding of the work just comple
 
 ## When to Trigger
 
-Automatically after:
-- Writing or modifying code (new functions, refactors, bug fixes)
-- Explaining code patterns, architecture, or concepts
-- Debugging sessions with root cause analysis
-- Any response containing an "Insight" block
+**Only on explicit request.** Trigger when the user says:
+- "quiz me"
+- "test my understanding"
+- "/quiz"
+- "/code-comprehension-quiz"
 
-Skip quizzing for:
-- Simple file reads without explanation
-- Configuration changes without conceptual content
-- Trivial one-line fixes (typos, imports)
-- Pure information lookups
+**Do NOT auto-trigger.** Never quiz automatically after code changes, explanations, or debugging. Wait for the user to ask.
 
-Stop quizzing when:
-- The user declines
-- The user skips two questions in a row
-- The user asks a new unrelated question
-
-Resume only after an explicit request like "quiz me", "test my understanding", or "/quiz".
+After completing one quiz, do NOT quiz again until the user explicitly requests another quiz.
 
 ## Quiz Generation
 
@@ -187,4 +178,5 @@ Would you like me to explain any of these concepts further?
 - Keep questions focused on the MOST RECENT work, not general knowledge
 - Questions should be answerable from the conversation context alone
 - If the user does not answer, mark the question as skipped and continue
-- Stop the quiz when the user declines or skips twice, and wait for an explicit request to resume
+- After completing a quiz, do NOT start another quiz until explicitly requested
+- Never auto-trigger on subsequent turns - only trigger on explicit commands like "/quiz"
